@@ -12,8 +12,7 @@ Desenvolver uma solução em **Node.js** que:
 O objetivo aqui não é só “fazer funcionar”, mas também demonstrar **organização de código e arquitetura mínima** (separação de responsabilidades, módulos claros).
 
 **Tempo sugerido:** ~30 min
-**Stack:** Node.js (JavaScript, sem TypeScript) + bibliotecas de scraping/download à sua escolha
-(ex.: `axios`/`node-fetch`, `cheerio` ou `puppeteer`, libs de ZIP como `archiver`, etc.).
+**Stack:** Node.js (JavaScript, sem TypeScript) + bibliotecas de scraping/download à sua escolha.
 
 ---
 
@@ -38,30 +37,22 @@ Da página alvo, sua solução deve conseguir identificar:
 1. **Extração**
 
    * Coletar nomes, URLs e códigos a partir da página alvo.
-   * A lógica de parsing deve ficar isolada em algum módulo/serviço de extração (por exemplo: `scraper/` ou `services/extractFiles.js`).
+   * Isolar a lógica de parsing em um módulo/serviço de extração.
 
 2. **Download**
 
-   * Baixar **todos os arquivos identificados** para uma pasta local, por exemplo: `downloads/`.
-   * A responsabilidade de download deve estar em um módulo próprio (ex.: `services/downloadFiles.js`).
+   * Baixar todos os arquivos identificados para uma pasta local.
+   * Isolar a responsabilidade de download em um módulo próprio.
 
 3. **Unificação**
 
-   * Gerar **um único arquivo** com todos os arquivos baixados:
-
-     * Preferencial: **ZIP** (ex.: com a lib `archiver`).
-     * Alternativa aceitável (para caso de `.txt`): concatenação em um único `.txt`.
-   * A lógica de unificação deve estar em módulo próprio (ex.: `services/mergeFiles.js` ou similar).
+   * Gerar um único arquivo com todos os arquivos baixados.
+   * Isolar a lógica de unificação em um módulo próprio.
 
 4. **Link de Download**
 
-   * Expor um endpoint HTTP, por exemplo:
-
-     * `GET /download`
-   * Esse endpoint deve retornar o **arquivo unificado** (ZIP ou `.txt`) para o usuário.
-   * Você pode usar **Express** (ou outro micro framework HTTP) para isso.
-
-> Dica: você pode optar por disparar todo o fluxo (extrair → baixar → unificar) antes, via script, ou sob demanda quando alguém chamar uma rota (ex.: `GET /processar` para gerar e depois `GET /download` para baixar). Use seu julgamento e explique a decisão no README.
+   * Expor um endpoint HTTP que retorne o arquivo unificado para o usuário.
+   * Você pode escolher o framework HTTP que preferir.
 
 ---
 
@@ -71,12 +62,12 @@ Não precisa ser um “mega projeto”, mas queremos ver **preocupação real co
 
 * **Separação de responsabilidades**:
 
-  * Um ponto de entrada principal .
-  * Um módulo para **HTTP/rotas** .
+  * Um ponto de entrada principal.
+  * Um módulo para **HTTP/rotas**.
   * Um módulo para **extração** (scraping/parsing do HTML).
   * Um módulo para **download** dos arquivos.
-  * Um módulo para **unificação** (gerar o ZIP ou `.txt` final).
-  * Opcional: módulo de **config/log** (timeout padrão, paths de pasta, etc.).
+  * Um módulo para **unificação** (geração do artefato final).
+  * Opcional: módulo de **config/log**.
 
 * **Facilidade de manutenção**:
 
@@ -87,18 +78,10 @@ Não precisa ser um “mega projeto”, mas queremos ver **preocupação real co
 
 ## Tratamento de erros (mínimo esperado)
 
-* **Timeout** ao acessar a página alvo:
-
-  * Tentar novamente uma vez ou retornar erro claro.
-* **Link quebrado (404/403)** durante download:
-
-  * Ignorar o arquivo específico, **registrar em log** e seguir com os demais.
-* **Falha na criação do ZIP/arquivo unificado**:
-
-  * Retornar erro HTTP adequado (ex.: `500`) com mensagem clara.
-* **Logs mínimos**:
-
-  * Registrar erros em console ou helper de log (`console.error` já é aceitável, se organizado).
+* Timeout ao acessar a página alvo.
+* Links quebrados durante o download, sem interromper todo o processo.
+* Falha na criação do arquivo unificado, retornando erro HTTP adequado.
+* Logs mínimos para facilitar entendimento de falhas.
 
 ---
 
@@ -115,7 +98,7 @@ Não precisa ser um “mega projeto”, mas queremos ver **preocupação real co
 
   * Código separado em módulos coerentes (extração, download, unificação, HTTP).
   * Evita concentrar toda a lógica em um único arquivo.
-  * Facilita possíveis alterações futuras (ex.: trocar `axios` por `fetch`, trocar ZIP por outro formato).
+  * Facilita possíveis alterações futuras.
 
 * **Qualidade do Código**
 
@@ -135,8 +118,8 @@ Não precisa ser um “mega projeto”, mas queremos ver **preocupação real co
 
     * Como instalar dependências.
     * Como rodar o projeto.
-    * Como usar (ex.: chamar `/download` ou outra rota que você definir).
-    * **Breve explicação das decisões de arquitetura** (por que você organizou as coisas assim).
+    * Como usar a solução.
+    * **Breve explicação das decisões de arquitetura**.
 
 ---
 
