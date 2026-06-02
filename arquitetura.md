@@ -9,7 +9,6 @@ src/
     config/ 
     utils/
     types/
-    tests/
 
     app.ts
     server.ts

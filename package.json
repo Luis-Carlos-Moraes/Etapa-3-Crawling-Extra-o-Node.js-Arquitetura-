@@ -1,8 +1,20 @@
 {
+  "scripts": {
+    "start": "ts-node src/app.ts",
+    "dev": "nodemon src/app.ts"
+  },
   "dependencies": {
     "archiver": "^8.0.0",
     "axios": "^1.16.1",
     "cheerio": "^1.2.0",
     "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/archiver": "^7.0.0",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.1",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
   }
 }
