@@ -11,6 +11,7 @@ export class MainController {
     private unitifier = new UnitifierService();
 
     async handleProcess(req: Request, res: Response) {
+        console.log('handleProcess called');
         const jobId = Date.now();
         const tempDir = path.join(__dirname, `../../temp/${jobId}`);
         const zipPath = path.join(__dirname, `../../temp/${jobId}.zip`);
