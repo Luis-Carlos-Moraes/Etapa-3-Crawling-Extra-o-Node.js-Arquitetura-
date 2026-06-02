@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Extractor & Downloader</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background-color: var(--border);
+            cursor: not-allowed;
+            color: var(--text-muted);
+        }
+
+        .status {
+            margin-top: 24px;
+            font-size: 0.875rem;
+            min-height: 1.25rem;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .is-loading .loading-spinner {
+            display: inline-block;
+        }
+
+        .is-loading .btn-text {
+            display: none;
+        }
+
+        .error {
+            color: #ef4444;
+        }
+
+        .success {
+            color: #10b981;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Extrair e Baixar Arquivos</h1>
+        <p>Clique no botão abaixo para iniciar a extração dos arquivos da página alvo e gerar um arquivo ZIP unificado para download.</p>
+        
+        <button id="downloadBtn" class="btn">
+            <span class="loading-spinner"></span>
+            <span class="btn-text">Baixar ZIP Unificado</span>
+        </button>
+
+        <div id="statusMsg" class="status"></div>
+    </div>
+
+    <script>
+        const downloadBtn = document.getElementById('downloadBtn');
+        const statusMsg = document.getElementById('statusMsg');
+
+        downloadBtn.addEventListener('click', async () => {
+            try {
+                // UI State: Loading
+                downloadBtn.disabled = true;
+                downloadBtn.classList.add('is-loading');
+                statusMsg.textContent = 'Processando arquivos, por favor aguarde...';
+                statusMsg.className = 'status';
+
+                const response = await fetch('/api/process', {
+                    method: 'POST'
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || errorData.error || 'Erro ao processar arquivos.');
+                }
+
+                // Handling Blob download
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'arquivos_unificados.zip';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+
+                statusMsg.textContent = 'Download concluído com sucesso!';
+                statusMsg.className = 'status success';
+            } catch (err) {
+                console.error(err);
+                statusMsg.textContent = `Erro: ${err.message}`;
+                statusMsg.className = 'status error';
+            } finally {
+                downloadBtn.disabled = false;
+                downloadBtn.classList.remove('is-loading');
+            }
+        });
+    </script>
+</body>
+</html>
