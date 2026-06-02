@@ -71,6 +71,7 @@ src/
 ├── public/             # Arquivos do Frontend (HTML/CSS/JS)
 ├── app.ts              # Ponto de entrada e configuração do Express
 └── tsconfig.json       # Configuração do compilador TypeScript
+tests/                  # Scripts de testes isolados
 ```
 
 - **Modularização**: Cada serviço tem uma única responsabilidade. O `MainController` apenas orquestra o fluxo entre os serviços.
@@ -80,18 +81,18 @@ src/
 
 ## Testes
 
-O projeto inclui scripts de teste simples para validar os serviços de extração e download de forma isolada, sem necessidade de rodar o servidor completo.
+O projeto inclui scripts de teste simples para validar os serviços de extração e download de forma isolada, localizados na pasta `tests/`.
 
 ### Executar Teste do Scraper
 Valida se a extração de links e códigos da página alvo está funcionando:
 ```bash
-npx ts-node src/test-scraper.ts
+npx ts-node tests/test-scraper.ts
 ```
 
 ### Executar Teste do Downloader
 Valida o download de um arquivo individual para uma pasta temporária:
 ```bash
-npx ts-node src/test-downloader.ts
+npx ts-node tests/test-downloader.ts
 ```
 
 ---
