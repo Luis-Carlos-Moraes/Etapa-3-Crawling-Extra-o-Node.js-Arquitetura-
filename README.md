@@ -1,133 +1,103 @@
 # Etapa 3 (Crawling/Extração – Node.js + Arquitetura)
 
-## Desafio
+Este projeto é uma solução em Node.js para extração de arquivos de uma página web, download automático e unificação em um único arquivo ZIP, disponibilizado via interface web e endpoint de API.
 
-Desenvolver uma solução em **Node.js** que:
+## Tecnologias Utilizadas
 
-1. **Extraia informações** da página alvo.
-2. **Baixe** todos os arquivos encontrados.
-3. **Unifique** esses arquivos em um único artefato.
-4. Disponibilize um **endpoint HTTP** que permita o **download** desse arquivo unificado.
-
-O objetivo aqui não é só “fazer funcionar”, mas também demonstrar **organização de código e arquitetura mínima** (separação de responsabilidades, módulos claros).
-
-**Tempo sugerido:** ~30 min
-**Stack:** Node.js (TypeScript) + bibliotecas de scraping/download à sua escolha.
+- **Node.js + TypeScript**
+- **Express**: Framework web para API e servidor de arquivos estáticos.
+- **Axios**: Cliente HTTP para downloads e requisições.
+- **Cheerio**: Parsing de HTML para extração de dados.
+- **Archiver (v8)**: Geração de arquivos ZIP.
 
 ---
 
-## Página alvo
+## Como Rodar o Projeto
 
-* **URL:** `http://omnissolucoes.com/teste3/`
+1. **Instalação de Dependências**:
+   ```bash
+   npm install
+   ```
 
----
-
-## Informações a extrair
-
-Da página alvo, sua solução deve conseguir identificar:
-
-* **Nome dos arquivos** listados.
-* **URLs completas** desses arquivos.
-* **Códigos** dos arquivos (quando presentes na listagem).
-
----
-
-## Funcionalidades obrigatórias
-
-1. **Extração**
-
-   * Coletar nomes, URLs e códigos a partir da página alvo.
-   * Isolar a lógica de parsing em um módulo/serviço de extração.
-
-2. **Download**
-
-   * Baixar todos os arquivos identificados para uma pasta local.
-   * Isolar a responsabilidade de download em um módulo próprio.
-
-3. **Unificação**
-
-   * Gerar um único arquivo com todos os arquivos baixados.
-   * Isolar a lógica de unificação em um módulo próprio.
-
-4. **Link de Download**
-
-   * Expor um endpoint HTTP que retorne o arquivo unificado para o usuário.
-   * Você pode escolher o framework HTTP que preferir.
+2. **Iniciar o Servidor**:
+   - Para desenvolvimento (com reload automático):
+     ```bash
+     npm run dev
+     ```
+   - Para produção:
+     ```bash
+     npm start
+     ```
 
 ---
 
-## Requisitos de arquitetura (foco adicional)
+## Como Usar a Solução
 
-Não precisa ser um “mega projeto”, mas queremos ver **preocupação real com arquitetura**:
+### 1. Pela Interface Web (Frontend)
+Acesse no seu navegador: `http://localhost:3000`
 
-* **Separação de responsabilidades**:
+- Clique no botão **"Baixar ZIP Unificado"**.
+- A interface exibirá o status do processamento em tempo real.
+- Ao finalizar, o download do arquivo `arquivos_unificados.zip` será iniciado automaticamente.
 
-  * Um ponto de entrada principal.
-  * Um módulo para **HTTP/rotas**.
-  * Um módulo para **extração** (scraping/parsing do HTML).
-  * Um módulo para **download** dos arquivos.
-  * Um módulo para **unificação** (geração do artefato final).
-  * Opcional: módulo de **config/log**.
+### 2. Pelo Backend (Apenas API)
+Caso prefira interagir diretamente com a API, envie uma requisição `POST` para o endpoint de processamento.
 
-* **Facilidade de manutenção**:
+**Exemplo usando cURL:**
+```bash
+curl -X POST http://localhost:3000/api/process --output resultado.zip
+```
 
-  * Evitar um único arquivo enorme com tudo misturado.
-  * Nomear funções de forma clara.
-
----
-
-## Tratamento de erros (mínimo esperado)
-
-* Timeout ao acessar a página alvo.
-* Links quebrados durante o download, sem interromper todo o processo.
-* Falha na criação do arquivo unificado, retornando erro HTTP adequado.
-* Logs mínimos para facilitar entendimento de falhas.
+**Comportamento:** O servidor processará os arquivos e retornará o fluxo de dados do ZIP diretamente na resposta.
 
 ---
 
-## Critérios de avaliação
+## Estrutura do Projeto
 
-* **Funcionalidade**
+O código foi organizado seguindo princípios de **Separação de Responsabilidades**, facilitando a manutenção e escalabilidade:
 
-  * Consegue **extrair** as informações da página alvo.
-  * Consegue **baixar** os arquivos.
-  * Consegue **unificar** em um único artefato.
-  * Consegue **expor um endpoint** que retorna o arquivo final.
+```text
+src/
+├── api/
+│   ├── controller/     # Coordena a execução e lida com req/res
+│   │   └── mainController.ts
+│   └── routes/         # Definição dos endpoints da API
+│       └── index.ts
+├── services/
+│   ├── extraction/     # Lógica de Scraping (ScraperService)
+│   ├── download/       # Gerenciamento de downloads (DownloaderService)
+│   ├── unification/    # Geração do ZIP (UnitifierService)
+│   └── types/          # Definições de interfaces compartilhadas
+├── public/             # Arquivos do Frontend (HTML/CSS/JS)
+├── app.ts              # Ponto de entrada e configuração do Express
+└── tsconfig.json       # Configuração do compilador TypeScript
+```
 
-* **Arquitetura / Organização**
-
-  * Código separado em módulos coerentes (extração, download, unificação, HTTP).
-  * Evita concentrar toda a lógica em um único arquivo.
-  * Facilita possíveis alterações futuras.
-
-* **Qualidade do Código**
-
-  * Nomes de funções, variáveis e arquivos claros.
-  * Fluxo de execução compreensível.
-  * Tratamento básico de casos de erro.
-
-* **Tratamento de Erros**
-
-  * Mensagens úteis.
-  * Resiliência mínima a problemas como timeout e links quebrados.
-  * O servidor não “morre” por exceções simples.
-
-* **Documentação**
-
-  * README objetivo com:
-
-    * Como instalar dependências.
-    * Como rodar o projeto.
-    * Como usar a solução.
-    * **Breve explicação das decisões de arquitetura**.
+- **Modularização**: Cada serviço tem uma única responsabilidade. O `MainController` apenas orquestra o fluxo entre os serviços.
+- **Limpeza**: Após o download do ZIP pelo usuário, o servidor realiza a limpeza automática dos arquivos temporários e do ZIP gerado.
 
 ---
 
-## Entrega
+## Testes
 
-* Publique o código em um **repositório público** no GitHub.
-* Inclua no README:
+O projeto inclui scripts de teste simples para validar os serviços de extração e download de forma isolada, sem necessidade de rodar o servidor completo.
 
-  * Comandos para rodar o projeto.
-  * Endpoint(s) disponíveis.
-* Envie o link conforme orientado no processo seletivo.
+### Executar Teste do Scraper
+Valida se a extração de links e códigos da página alvo está funcionando:
+```bash
+npx ts-node src/test-scraper.ts
+```
+
+### Executar Teste do Downloader
+Valida o download de um arquivo individual para uma pasta temporária:
+```bash
+npx ts-node src/test-downloader.ts
+```
+
+---
+
+## Tratamento de Erros
+
+- **Resiliência**: Se um link de download estiver quebrado, o sistema registra o erro no log mas continua o processamento dos demais arquivos.
+- **Timeout**: Limite de 10 segundos para conexões externas para evitar travamentos.
+- **Status HTTP**: Retorno de erros claros (404, 500) com mensagens explicativas em formato JSON.
