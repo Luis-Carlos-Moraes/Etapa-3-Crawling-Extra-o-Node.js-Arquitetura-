@@ -81,19 +81,30 @@ tests/                  # Scripts de testes isolados
 
 ## Testes
 
-O projeto inclui scripts de teste simples para validar os serviços de extração e download de forma isolada, localizados na pasta `tests/`.
+O projeto possui dois tipos de testes:
 
-### Executar Teste do Scraper
-Valida se a extração de links e códigos da página alvo está funcionando:
+### 1. Testes Automatizados (Jest)
+Testes unitários com mocks para garantir que a lógica de negócio funcione de forma independente e rápida.
 ```bash
-npx ts-node tests/test-scraper.ts
+npm test
 ```
 
-### Executar Teste do Downloader
-Valida o download de um arquivo individual para uma pasta temporária:
+### 2. Scripts de Teste Manuais (E2E/Integração)
+Scripts localizados em `tests/manual/` que batem diretamente no site alvo. Úteis para validar a integração real com o `omnissolucoes.com`.
 ```bash
-npx ts-node tests/test-downloader.ts
+npx ts-node tests/manual/test-scraper.ts
+npx ts-node tests/manual/test-downloader.ts
 ```
+
+---
+
+## Integração Contínua (CI)
+
+Este repositório utiliza **GitHub Actions** para garantir a qualidade contínua do código. O workflow definido em `.github/workflows/ci.yml` realiza as seguintes etapas em cada `push` ou `pull request`:
+1. Instalação de dependências.
+2. Verificação de tipos com o compilador TypeScript (`tsc --noEmit`).
+3. Execução dos testes automatizados com Jest.
+
 
 ---
 

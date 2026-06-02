@@ -1,7 +1,8 @@
 {
   "scripts": {
     "start": "ts-node src/app.ts",
-    "dev": "nodemon src/app.ts"
+    "dev": "nodemon src/app.ts",
+    "test": "jest"
   },
   "dependencies": {
     "archiver": "^8.0.0",
@@ -12,8 +13,12 @@
   "devDependencies": {
     "@types/archiver": "^7.0.0",
     "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
     "@types/node": "^25.9.1",
+    "jest": "^30.4.2",
+    "nock": "^14.0.15",
     "nodemon": "^3.1.14",
+    "ts-jest": "^29.4.11",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
   }
