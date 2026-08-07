@@ -1,8 +1,8 @@
-# Etapa 3 (Crawling/Extração – Node.js + Arquitetura)
+# Etapa 3 (Crawling/Extração – Node + Arquitetura)
 
 ## Desafio
 
-Desenvolver uma solução em **Node.js** que:
+Desenvolver uma solução em **Node** que:
 
 1. **Extraia informações** da página alvo.
 2. **Baixe** todos os arquivos encontrados.
@@ -12,7 +12,7 @@ Desenvolver uma solução em **Node.js** que:
 O objetivo aqui não é só “fazer funcionar”, mas também demonstrar **organização de código e arquitetura mínima** (separação de responsabilidades, módulos claros).
 
 **Tempo sugerido:** ~30 min
-**Stack:** Node.js (TypeScript) + bibliotecas de scraping/download à sua escolha.
+**Stack:** Node (TypeScript) + bibliotecas de scraping/download à sua escolha.
 
 ---
 
